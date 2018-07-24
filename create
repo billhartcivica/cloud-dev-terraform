@@ -1,0 +1,20 @@
+#!/bin/sh
+# Set environment variables. Machine name, username and password set as script parameters.
+# Substitute ACCESS_KEY and SECRET_KEY values below with your own AWS credentials.
+export ACCESS_KEY=XXXXXXXXXXXXXXXXXXX
+export SECRET_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+export MACHINE_NAME=$1
+export USERNAME=$2
+export USERPASS=$3
+
+# Sanity check the script run
+if (( $# < 3 )); then
+    echo Usage: 'create.sh <machine-name> <user-name> <user-password>'
+    exit 1
+fi
+
+# Substitute env params into script template
+rm -rf cloud.tf; envsubst < "cloud-template.tem" > "cloud.tf";
+
+# Apply the script.
+/usr/bin/terraform apply -input=false -auto-approve

@@ -1,0 +1,59 @@
+# Template to create development machine in AWS. Uses pre-baked AMI.
+
+# Authenticate to AWS/region below.
+provider "aws" {
+  access_key = "${ACCESS_KEY}"
+  secret_key = "${SECRET_KEY}"
+  region     = "eu-west-2"
+}
+
+# Create AWS EC2 instance, using the parameters set in the 'create' script.
+resource "aws_instance" "example" {
+  ami           = "ami-8f5cb7e8"
+  instance_type = "t2.large"
+  key_name = "borneo"
+  root_block_device {
+    volume_type="gp2"
+    volume_size="40"
+    delete_on_termination = "true"
+    }
+  tags {
+    Name = "${MACHINE_NAME}"
+    project = "EGAR"
+    egar = "ec2"
+    Owner = "${USERNAME}"
+  }
+
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = "${file("borneo.pem")}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo useradd -m ${USERNAME}",
+      "sudo echo '${USERNAME}:${USERPASS}' | sudo chpasswd",
+      "sudo usermod -G sudo ${USERNAME}",
+      "sudo apt-get remove gitkraken -y",
+      "sudo rm -rf /home/${USERNAME}",
+      "sudo mv /home/bill /home/${USERNAME}",
+      "sudo rm -rf /home/${USERNAME}/.gitconfig",
+      "sudo chown -R ${USERNAME} /home/${USERNAME}/*",
+      "sudo chgrp -R ${USERNAME} /home/${USERNAME}/*",
+      "sudo chown -R ${USERNAME} /home/${USERNAME}/.",
+      "sudo chgrp -R ${USERNAME} /home/${USERNAME}/."
+      ]
+  }
+}
+
+# Provision an Elastic IP
+resource "aws_eip" "ip" {
+  instance = "${aws_instance.example.id}"
+}
+
+# Print out instance IP at the end of the script.
+output "ip" {
+  value = "${aws_eip.ip.public_ip}"
+}
+
