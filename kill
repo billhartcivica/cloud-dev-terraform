@@ -1,2 +1,3 @@
+# W.Hart - Civica Digital
 #!/bin/sh
 /usr/bin/terraform destroy

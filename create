@@ -1,5 +1,6 @@
 #!/bin/sh
 # Set environment variables. Machine name, username and password set as script parameters.
+# W.Hart - Civica Digital
 # Substitute ACCESS_KEY and SECRET_KEY values below with your own AWS credentials.
 export ACCESS_KEY=XXXXXXXXXXXXXXXXXXX
 export SECRET_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

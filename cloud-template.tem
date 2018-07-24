@@ -1,4 +1,4 @@
-# Template to create development machine in AWS. Uses pre-baked AMI.
+# Template to create development machine in AWS. Uses pre-baked AMI. W.Hart
 
 # Authenticate to AWS/region below.
 provider "aws" {
